@@ -34,7 +34,7 @@ export default function Chat() {
 
     try {
       const response = await fetch(
-        `https://backend-health-bestie.vercel.app/users/api/chat`,
+        `https://backend-health-bestie.vercel.app/api/users/chat`,
         {
           method: "POST",
           headers: {
@@ -112,6 +112,8 @@ export default function Chat() {
     </div>
   );
 }
+
+
 
 
 

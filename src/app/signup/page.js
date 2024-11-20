@@ -25,7 +25,7 @@ export default function Signup() {
     setSuccess('');
 
     // Send sign-up request to the API
-    const response = await fetch('https://backend-health-bestie.vercel.app/users/signup ', {
+    const response = await fetch('https://backend-health-bestie.vercel.app/api/users/signup ', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

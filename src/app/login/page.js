@@ -23,7 +23,7 @@ export default function Login() {
     setSuccess('');
 
     // Send login request to the API
-    const response = await fetch('https://backend-health-bestie.vercel.app/users/login', {
+    const response = await fetch('https://backend-health-bestie.vercel.app/api/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
