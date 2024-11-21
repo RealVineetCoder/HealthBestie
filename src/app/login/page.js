@@ -1,102 +1,276 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+// "use client"
+// import { useState, useEffect } from 'react';
+// import { ToastContainer, toast } from 'react-toastify';
+// import { useRouter } from "next/navigation";
+// import Link from 'next/link'
+// import { Eye, EyeOff } from 'lucide-react'
+// import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Input } from "@/components/ui/input"
+// import { Button } from "@/components/ui/button"
+// import { Label } from "@/components/ui/label"
+
+// export default function Login() {
+//   const [email, setEmail] = useState('')
+//   const [password, setPassword] = useState('')
+//   const [showPassword, setShowPassword] = useState(false)
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+    
+//     // Simple client-side validation
+//     if (!email || !password) {
+//       setError('Please fill in both fields');
+//       return;
+//     }
+
+//     setError('');
+//     setSuccess('');
+
+//     // Send login request to the API
+//     const response = await fetch('https://backend-health-bestie.vercel.app/api/users/login', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ email, password }),
+//     });
+
+//     const data = await response.json();
+
+//     if (response.ok) {
+//       setSuccess(data.message);
+//       const getToken = data.token
+
+//       localStorage.setItem("Token" , getToken)
+//       toast.success("Account verified successfully!");
+//     } else {
+//       setError(data.message);
+//     }
+//   };
+//   useEffect(() => {
+//     const token = localStorage.getItem("Token");
+    
+//     if (token) {
+//       router.push("/");
+//     }
+//   }, []);
+
+
+//     return (
+//       <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+//         <Card className="w-full max-w-md">
+//           <CardHeader className="space-y-1">
+//             <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+//             <CardDescription className="text-center">
+//               Enter your email and password to login to your account
+//             </CardDescription>
+//           </CardHeader>
+//           <CardContent>
+//             <form onSubmit={handleSubmit} className="space-y-4">
+//               <div className="space-y-2">
+//                 <Label htmlFor="email">Email</Label>
+//                 <Input 
+//                   id="email"
+//                   type="email"
+//                   placeholder="m@example.com"
+//                   value={email}
+//                   onChange={(e) => setEmail(e.target.value)}
+//                   required
+//                 />
+//               </div>
+//               <div className="space-y-2">
+//                 <Label htmlFor="password">Password</Label>
+//                 <div className="relative">
+//                   <Input
+//                     id="password"
+//                     type={showPassword ? "text" : "password"}
+//                     value={password}
+//                     onChange={(e) => setPassword(e.target.value)}
+//                     required
+//                   />
+//                   <button
+//                     type="button"
+//                     onClick={() => setShowPassword(!showPassword)}
+//                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+//                   >
+//                     {showPassword ? (
+//                       <EyeOff className="h-5 w-5" aria-hidden="true" />
+//                     ) : (
+//                       <Eye className="h-5 w-5" aria-hidden="true" />
+//                     )}
+//                   </button>
+//                 </div>
+//               </div>
+//               <Button type="submit" className="w-full">
+//                 Sign in
+//               </Button>
+//             </form>
+//           </CardContent>
+//           <CardFooter className="flex flex-col space-y-2">
+//             {/* <div className="text-sm text-center">
+//               <Link href="/forgot-password" className="font-medium text-primary hover:text-primary/80">
+//                 Forgot your password?
+//               </Link>
+//             </div> */}
+//             <div className="text-sm text-center">
+//               Don't have an account?{' '}
+//               <Link href="/signup" className="font-medium text-primary hover:text-primary/80">
+//                 Sign up
+//               </Link>
+//             </div>
+//           </CardFooter>
+//         </Card>
+//       </div>
+//     )
+// }
+"use client";
+
+import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const router = useRouter();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleLogin = async (e) => {
+  const router = useRouter();
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Simple client-side validation
+
     if (!email || !password) {
-      setError('Please fill in both fields');
+      setError("Please fill in both fields");
+      toast.error("Please fill in both fields");
       return;
     }
 
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
-    // Send login request to the API
-    const response = await fetch('https://backend-health-bestie.vercel.app/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch(
+        "https://backend-health-bestie.vercel.app/api/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      setSuccess(data.message);
-      const getToken = data.token
-
-      localStorage.setItem("Token" , getToken)
-      toast.success("Account verified successfully!");
-    } else {
-      setError(data.message);
+      if (response.ok) {
+        setSuccess(data.message);
+        const token = data.token;
+        localStorage.setItem("Token", token);
+        toast.success("Logged in successfully!");
+        router.push("/"); // Navigate to the homepage after successful login
+      } else {
+        setError(data.message || "Login failed. Please try again.");
+        toast.error(data.message || "Invalid email or password.");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again later.");
+      toast.error("Unable to connect to the server.");
     }
   };
+
+  // Check for token on mount
   useEffect(() => {
     const token = localStorage.getItem("Token");
-    
     if (token) {
       router.push("/");
     }
-  }, []);
-
+  }, [router]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-80">
-        <h2 className="text-2xl text-black font-bold text-center mb-6">Login</h2>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+          <CardDescription className="text-center">
+            Enter your email and password to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Input */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            {/* Password Input */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-5 w-5" aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+            </div>
+            {/* Submit Button */}
+            <Button type="submit" className="w-full">
+              Sign in
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-2">
+          <div className="text-sm text-center">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="font-medium text-primary hover:text-primary/80"
+            >
+              Sign up
+            </Link>
           </div>
-          
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-600">
-            Login
-          </button>
-        </form>
-      </div>
+        </CardFooter>
+      </Card>
+      <ToastContainer />
     </div>
-    
   );
 }
+

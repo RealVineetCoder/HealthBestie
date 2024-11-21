@@ -1,114 +1,240 @@
-'use client';  // Mark this file as a client-side component
+// 'use client';  // Mark this file as a client-side component
 
-import { useState } from 'react';
+// import { useState } from 'react';
+// import { useRouter } from 'next/navigation'; 
+// import { ToastContainer, toast } from 'react-toastify';
+// import { Button } from "@/components/ui/button"
+// import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label" // Updated import for useRouter in app directory
+
+// export default function Signup() {
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+//   const router = useRouter();
+//    // Now using the correct useRouter from next/navigation
+//    const [formData, setFormData] = useState({
+//     name: '',
+//     email: '',
+//     password: ''
+//   })
+//   const handleChange = (e) => {
+//     const { name, value } = e.target
+//     setFormData(prevData => ({
+//       ...prevData,
+//       [name]: value
+//     }))
+//   }
+
+//   const  handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     // Simple client-side validation
+//     if (!name || !email || !password) {
+//       setError('Please fill in all fields');
+//       return;
+//     }
+
+//     setError('');
+//     setSuccess('');
+
+//     // Send sign-up request to the API
+//     const response = await fetch('https://backend-health-bestie.vercel.app/api/users/signup ', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ name, email, password }),
+//     });
+
+//     const data = await response.json();
+
+//     if (response.ok) {
+//       setSuccess(data.message);
+//       toast.success("Account Created successfully!");
+//       // Redirect to login page after successful sign-up
+//       setTimeout(() => {
+//         router.push('/login');
+//       }, 2000);
+//     } else {
+//       setError(data.message);
+//     }
+//   };
+
+//   return (
+//     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+//       <Card className="w-full max-w-md">
+//         <CardHeader>
+//           <CardTitle>Sign Up</CardTitle>
+//           <CardDescription>Create your account to get started.</CardDescription>
+//         </CardHeader>
+//         <form onSubmit={handleSubmit}>
+//           <CardContent className="space-y-4">
+//             <div className="space-y-2">
+//               <Label htmlFor="name">Name</Label>
+//               <Input
+//                 id="name"
+//                 name="name"
+//                 placeholder="John Doe"
+//                 value={formData.name}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="email">Email</Label>
+//               <Input
+//                 id="email"
+//                 name="email"
+//                 type="email"
+//                 placeholder="john@example.com"
+//                 value={formData.email}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="password">Password</Label>
+//               <Input
+//                 id="password"
+//                 name="password"
+//                 type="password"
+//                 value={formData.password}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </div>
+//           </CardContent>
+//           <CardFooter>
+//             <Button type="submit" className="w-full">Sign Up</Button>
+//           </CardFooter>
+//         </form>
+//       </Card>
+//     </div>
+//   )
+// }
+'use client'; 
+
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; 
-import { ToastContainer, toast } from 'react-toastify'; // Updated import for useRouter in app directory
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Signup() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const router = useRouter(); // Now using the correct useRouter from next/navigation
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+  const [status, setStatus] = useState({ error: '', success: '' });
+  const router = useRouter();
 
-  const handleSignup = async (e) => {
+  // Handle input changes dynamically
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple client-side validation
-    if (!name || !email || !password) {
-      setError('Please fill in all fields');
+    // Validate form fields
+    const emptyFields = Object.keys(formData).filter((key) => !formData[key]);
+    if (emptyFields.length) {
+      setStatus({ error: 'All fields are required', success: '' });
       return;
     }
 
-    setError('');
-    setSuccess('');
+    try {
+      const response = await fetch('https://backend-health-bestie.vercel.app/api/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Send sign-up request to the API
-    const response = await fetch('https://backend-health-bestie.vercel.app/api/users/signup ', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+      const data = await response.json();
 
-    const data = await response.json();
-
-    if (response.ok) {
-      setSuccess(data.message);
-      toast.success("Account Created successfully!");
-      // Redirect to login page after successful sign-up
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-    } else {
-      setError(data.message);
+      if (response.ok) {
+        setStatus({ success: data.message, error: '' });
+        toast.success("Account created successfully!");
+        setTimeout(() => router.push('/login'), 2000); // Redirect after a delay
+      } else {
+        setStatus({ error: data.message, success: '' });
+      }
+    } catch (err) {
+      setStatus({ error: 'Something went wrong. Please try again later.', success: '' });
     }
   };
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+    if (token) {
+      router.push("/");
+    }
+  }, [router]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-80">
-        <h2 className="text-2xl text-black font-bold text-center mb-6">Sign Up</h2>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
-
-        <form onSubmit={handleSignup} className="space-y-4">
-          {/* Name Input */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 text-black mt-1 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          
-          {/* Email Input */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 mt-1 text-black border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          
-          {/* Password Input */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 mt-1 border text-black border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-600">
-            Sign Up
-          </button>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Sign Up</CardTitle>
+          <CardDescription>Create your account to get started.</CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            {status.error && <p className="text-red-500 text-sm">{status.error}</p>}
+            {status.success && <p className="text-green-500 text-sm">{status.success}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full">Sign Up</Button>
+          </CardFooter>
         </form>
-      </div> 
+      </Card>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
+
