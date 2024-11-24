@@ -43,7 +43,7 @@ export default function ImageCursor() {
           <p className="text-xl mb-6">
           Share your thoughts, and let our AI friend guide you.
           </p>
-          <Link href="mental-health">
+          <Link href="/mental-health">
             <Button size="lg" variant="primary " className="bg-black" >Talk to AI Friend</Button>
           </Link>
           
