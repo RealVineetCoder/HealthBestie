@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const images = [
   '/ai-image1.jpg',
@@ -42,7 +43,10 @@ export default function ImageCursor() {
           <p className="text-xl mb-6">
           Share your thoughts, and let our AI friend guide you.
           </p>
-          <Button size="lg" variant="primary " className="bg-black">Talk to AI Friend</Button>
+          <Link href="mental-health">
+            <Button size="lg" variant="primary " className="bg-black" >Talk to AI Friend</Button>
+          </Link>
+          
         </div>
       </div>
     </main>
