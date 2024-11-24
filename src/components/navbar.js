@@ -1,36 +1,3 @@
-// export default function Navbar() {
-//     return (
-//       <header className="w-full bg-white shadow-md">
-//         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-//           <a href="/" className="text-2xl font-bold text-pink-500">
-//             AI Health Bestie
-//           </a>
-//           <ul className="flex gap-6 text-gray-700">
-//             <li>
-//               <a href="/" className="hover:text-pink-500 transition">
-//                 Home
-//               </a>
-//             </li>
-//             <li>
-//               <a href="/login" className="hover:text-pink-500 transition">
-//                 Login
-//               </a>
-//             </li>
-//             <li>
-//               <a href="/signup" className="hover:text-pink-500 transition">
-//                 Sign Up
-//               </a>
-//             </li>
-//             <li>
-//               <a href="/mental-health" className="hover:text-pink-500 transition">
-//                 Mental Health Chat
-//               </a>
-//             </li>
-//           </ul>
-//         </nav>
-//       </header>
-//     );
-//   }
 "use client"
 import { useState } from 'react'
 import Image from 'next/image'
@@ -81,9 +48,9 @@ export default function Navbar() {
               ))}
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+          <Link href='/login' className="hidden sm:ml-6 sm:flex sm:items-center">
             <Button>Sign In</Button>
-          </div>
+          </Link>
           <div className="-mr-2 flex items-center sm:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
@@ -108,9 +75,9 @@ export default function Navbar() {
                       {item.name}
                     </Link>
                   ))}
-                  <div className="mt-4">
-                    <Button className="w-full">Sign In</Button>
-                  </div>
+                  <Link href="login" className="mt-4">
+                    {/* <Link href='login' className="w-full">Sign In</Link> */}
+                  </Link>
                 </nav>
               </SheetContent>
             </Sheet>

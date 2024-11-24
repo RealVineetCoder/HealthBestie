@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/router';
 import { CardBody, CardContainer, CardItem } from "../components/ui/3d-card";
 import Image from "next/image";
-import stressImage from "../image/logo.png";
+
+import anxiety from '../image/anxiety.jpg';
+import depression from '../image/depression.jpg';
+import mania from '../image/mania.jpg';
+import sleep_disorder from '../image/sd.jpg';
 
 export default function Card({ testName }) {
-  const router = useRouter();
+  console.log(testName);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -14,9 +17,10 @@ export default function Card({ testName }) {
 
   const handleCardClick = () => {
     // Ensure we are on the client before using router
-    if (isClient) {
-      router.push(`/quiz/${testName}`);
-    }
+  
+      window.sessionStorage.setItem('quiz',testName);
+      window.location.href=(`/quiz`);
+    
   };
 
   return (
@@ -40,7 +44,7 @@ export default function Card({ testName }) {
           </CardItem>
           <CardItem translateZ="100" className="w-full mt-4">
             <Image
-              src={stressImage}
+              src={testName==="sleep_disorder"?sleep_disorder:(testName==="anxiety"?anxiety:(testName==="depression"?depression:(testName==="mania"?mania:null)))}
               height={1000}
               width={1000}
               className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"

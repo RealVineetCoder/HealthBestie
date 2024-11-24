@@ -6,7 +6,7 @@
 //   );
 // }
 // pages/index.js
-"use client"
+"use client";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Image from "next/image";
@@ -16,15 +16,9 @@ import Link from "next/link";
 import stressImage from "../image/logo.png";
 import Card from "@/components/Card";
 import Router from "next/router";
- // Add the correct extension.
-
-
-
-
+// Add the correct extension.
 
 export default function Home() {
-  
-
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1 flex flex-col items-center justify-center bg-gray-50 px-4">
@@ -40,13 +34,16 @@ export default function Home() {
         >
           Talk to AI Friend
         </a>
-        <Card testName={'depression'} />
-        <Card testName={'sleep_disorder'}  />
-        <Card testName={'mania'}  />
-        <Card testName={'anxiety'}  />
+        <div className="flex p-2 mb-0">
+          <Card testName={"depression"} />
+          <Card testName={"sleep_disorder"} />
+        </div>
+        <div className="flex p-2 mt-0">
+          <Card testName={"mania"} />
+          <Card testName={"anxiety"} />
+        </div>
       </main>
-    
-    
+
       <Footer />
     </div>
   );

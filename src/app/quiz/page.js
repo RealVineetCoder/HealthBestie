@@ -1,12 +1,19 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/router" // Import the router for dynamic URL params
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router"; // Import the router for dynamic URL params
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { BACKEND_SERVER } from "@/lib/config";
 
 // Initial state to manage quiz data, score, etc.
 export default function QuizInterface() {
@@ -15,23 +22,27 @@ export default function QuizInterface() {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [quizData, setQuizData] = useState([]); // Quiz data to be fetched
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null); // Error state
 
-  const router = useRouter(); // Use the router to access the `id` from the URL
-  const { id } = router.query; // Get the dynamic parameter (id) from the URL
+  // const router = useRouter(); // Use the router to access the `id` from the URL
+  // const { id } = router.query; // Get the dynamic parameter (id) from the URL
 
+  const id = sessionStorage.getItem("quiz");
   // Fetch quiz data from API when `id` is available
   useEffect(() => {
+    // console.log(id);
     if (!id) return; // Return early if `id` is not available
 
     const takeTest = async () => {
-      setLoading(true); // Start loading
+      // setLoading(true); // Start loading
       try {
-        const res = await fetch(`https://backend-health-bestie.vercel.app/api/quiz/${id}`);
+        // /quiz/:type/submit
+        const res = await fetch(`${BACKEND_SERVER}/api/quiz/${id}`);
         const data = await res.json();
 
         if (res.ok) {
+          console.log(data);
           setQuizData(data); // Set the fetched data
         } else {
           setError("Failed to load quiz data");
@@ -48,7 +59,9 @@ export default function QuizInterface() {
 
   const handleSubmit = () => {
     // Find the selected answer's score
-    const selectedOption = quizData[currentQuestion]?.options.find(option => option.text === selectedAnswer);
+    const selectedOption = quizData[currentQuestion]?.options.find(
+      (option) => option.text === selectedAnswer
+    );
 
     if (selectedOption) {
       setScore(score + selectedOption.score);
@@ -81,14 +94,24 @@ export default function QuizInterface() {
   return (
     <Card className="w-full max-w-lg mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Mental Health Check</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Mental Health Check
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {!showResult ? (
           <>
-            <Progress value={(currentQuestion + 1) / quizData.length * 100} className="mb-4" />
-            <h2 className="text-xl font-semibold mb-4">{quizData[currentQuestion]?.question}</h2>
-            <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer}>
+            <Progress
+              value={((currentQuestion + 1) / quizData.length) * 100}
+              className="mb-4"
+            />
+            <h2 className="text-xl font-semibold mb-4">
+              {quizData[currentQuestion]?.question}
+            </h2>
+            <RadioGroup
+              value={selectedAnswer}
+              onValueChange={setSelectedAnswer}
+            >
               {quizData[currentQuestion]?.options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-2">
                   <RadioGroupItem value={option.text} id={`option-${index}`} />
@@ -100,7 +123,21 @@ export default function QuizInterface() {
         ) : (
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Quiz Completed!</h2>
-            <p className="text-xl">Your score: {score} out of {quizData.length * 3}</p>
+            <p className="text-xl">
+              Your score: {score} out of {quizData.length * 3}
+            </p>
+
+            {score <= 5 ? (
+              <p className="text-xl">Mild symptoms. Monitor your well-being.</p>
+            ) : score <= 10 ? (
+              <p className="text-xl">
+                Moderate symptoms. Consider reaching out to a professional.
+              </p>
+            ) : (
+              <p className="text-xl">
+                Severe symptoms. Professional help is highly recommended.
+              </p>
+            )}
           </div>
         )}
       </CardContent>
@@ -116,6 +153,3 @@ export default function QuizInterface() {
     </Card>
   );
 }
-
-
-
