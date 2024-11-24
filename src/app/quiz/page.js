@@ -1,5 +1,5 @@
 "use client";
-
+import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router"; // Import the router for dynamic URL params
 import {
@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BACKEND_SERVER } from "@/lib/config";
 
-// Initial state to manage quiz data, score, etc.
 export default function QuizInterface() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -24,25 +23,27 @@ export default function QuizInterface() {
   const [quizData, setQuizData] = useState([]); // Quiz data to be fetched
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [quizId, setQuizId] = useState(null); // State to hold `quiz` ID
 
-  // const router = useRouter(); // Use the router to access the `id` from the URL
-  // const { id } = router.query; // Get the dynamic parameter (id) from the URL
-
-  const id = sessionStorage.getItem("quiz");
-  // Fetch quiz data from API when `id` is available
+  // UseEffect to retrieve quiz ID from sessionStorage
   useEffect(() => {
-    // console.log(id);
-    if (!id) return; // Return early if `id` is not available
+    if (typeof window !== "undefined") {
+      const id = sessionStorage.getItem("quiz");
+      setQuizId(id);
+    }
+  }, []);
+
+  // Fetch quiz data from API when `quizId` is available
+  useEffect(() => {
+    if (!quizId) return; // Return early if `quizId` is not available
 
     const takeTest = async () => {
-      // setLoading(true); // Start loading
+      setLoading(true); // Start loading
       try {
-        // /quiz/:type/submit
-        const res = await fetch(`${BACKEND_SERVER}/api/quiz/${id}`);
+        const res = await fetch(`${BACKEND_SERVER}/api/quiz/${quizId}`);
         const data = await res.json();
 
         if (res.ok) {
-          console.log(data);
           setQuizData(data); // Set the fetched data
         } else {
           setError("Failed to load quiz data");
@@ -55,10 +56,9 @@ export default function QuizInterface() {
     };
 
     takeTest();
-  }, [id]); // Re-run effect when `id` changes
+  }, [quizId]); // Re-run effect when `quizId` changes
 
   const handleSubmit = () => {
-    // Find the selected answer's score
     const selectedOption = quizData[currentQuestion]?.options.find(
       (option) => option.text === selectedAnswer
     );
@@ -84,19 +84,28 @@ export default function QuizInterface() {
 
   // Show loading, error, or quiz content
   if (loading) {
-    return <div>Loading quiz data...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 text-blue-500 animate-spin" />
+          <p className="mt-4 text-lg font-semibold text-gray-600">
+            Loading quiz data...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return <div>{error}</div>;
   }
+  
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <div className="mt-20">
+      <Card className="w-full max-w-lg mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">
-          Mental Health Check
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold">{quizId ? quizId.charAt(0).toUpperCase() + quizId.slice(1) : ''} Assessment</CardTitle>
       </CardHeader>
       <CardContent>
         {!showResult ? (
@@ -151,5 +160,8 @@ export default function QuizInterface() {
         )}
       </CardFooter>
     </Card>
+    </div>
+    
   );
 }
+

@@ -7,7 +7,7 @@ import depression from '../image/depression.jpg';
 import mania from '../image/mania.jpg';
 import sleep_disorder from '../image/sd.jpg';
 
-export default function Card({ testName }) {
+export default function Card({ testName, title, description }) {
   console.log(testName);
   const [isClient, setIsClient] = useState(false);
 
@@ -33,14 +33,14 @@ export default function Card({ testName }) {
             translateZ="50"
             className="text-xl font-bold text-neutral-600 dark:text-white"
           >
-            Battling {testName} Alone? You Don't Have To.
+            {title}
           </CardItem>
           <CardItem
             as="p"
             translateZ="60"
             className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
           >
-            Mental health doesn’t have to be expensive. Get the support you deserve, anytime, anywhere.
+            {description}
           </CardItem>
           <CardItem translateZ="100" className="w-full mt-4">
             <Image
