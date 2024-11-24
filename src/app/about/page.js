@@ -39,7 +39,7 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Mental health influences our capacity to manage emotions, cope with life's challenges, and maintain a positive outlook.
+                Mental health influences our capacity to manage emotions, cope with life&apos;s challenges, and maintain a positive outlook.
               </CardDescription>
             </CardContent>
           </Card>
@@ -81,7 +81,7 @@ export default function AboutPage() {
           <li>Resources for professional help when needed</li>
         </ul>
         <p className="mb-4">
-          While AI Health Bestie is a powerful tool for mental health support, it's important to remember that it's not a substitute for professional medical advice, diagnosis, or treatment. If you're experiencing severe mental health issues, please consult with a qualified healthcare provider.
+          While AI Health Bestie is a powerful tool for mental health support, it&apos;s important to remember that it&apos;s not a substitute for professional medical advice, diagnosis, or treatment. If you&apos;re experiencing severe mental health issues, please consult with a qualified healthcare provider.
         </p>
       </section>
 
@@ -97,4 +97,5 @@ export default function AboutPage() {
     </main>
   )
 }
+
 

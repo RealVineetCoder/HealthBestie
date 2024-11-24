@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Bot, BrainCircuit, Mail, MapPin, Phone } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Bot, BrainCircuit, Mail, MapPin, Phone } from "lucide-react";
 
 export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold text-center mb-8">Contact AI Health Bestie</h1>
-      
+
       <div className="grid gap-8 md:grid-cols-2">
         <div>
           <Card className="mb-8">
@@ -22,7 +22,7 @@ export default function ContactPage() {
               </CardDescription>
             </CardHeader>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -43,25 +43,25 @@ export default function ContactPage() {
             </CardContent>
           </Card>
         </div>
-        
+
         <div>
           <Card>
             <CardHeader>
               <CardTitle>Get in Touch</CardTitle>
               <CardDescription>
-                Fill out the form below, and we'll get back to you as soon as possible.
+                Fill out the form below, and we&apos;ll get back to you as soon as possible.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form className="space-y-4">
-                <Input placeholder="Your Name" />
-                <Input type="email" placeholder="Your Email" />
-                <Textarea placeholder="Your Message" />
+                <Input placeholder="Your Name" required aria-label="Your Name" />
+                <Input type="email" placeholder="Your Email" required aria-label="Your Email" />
+                <Textarea placeholder="Your Message" required aria-label="Your Message" />
                 <Button type="submit" className="w-full">Send Message</Button>
               </form>
             </CardContent>
           </Card>
-          
+
           <div className="mt-8 space-y-4">
             <div className="flex items-center">
               <Mail className="mr-2" />
@@ -79,6 +79,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 

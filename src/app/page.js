@@ -1,11 +1,3 @@
-// import Image from "next/image";
-
-// export default function Home() {
-//   return (
-//     <div>Health Bestie Project</div>
-//   );
-// }
-// pages/index.js
 "use client";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -17,29 +9,7 @@ import stressImage from "../image/logo.png";
 import Card from "@/components/Card";
 import Router from "next/router";
 import ImageCursor from "@/components/imagecursor";
-import { Brain, Moon, Frown, Zap } from 'lucide-react'
-const assessments = [
-  {
-    title: 'Depression Assessment',
-    description: 'Evaluate your mood and emotional well-being',
-    icon: Frown,
-  },
-  {
-    title: 'Sleep Disorder Test',
-    description: 'Analyze your sleep patterns and quality',
-    icon: Moon,
-  },
-  {
-    title: 'Anxiety Screening',
-    description: 'Assess your anxiety levels and triggers',
-    icon: Brain,
-  },
-  {
-    title: 'Mania Evaluation',
-    description: 'Check for signs of manic episodes',
-    icon: Zap,
-  },
-]
+
 // Add the correct extension.
 
 export default function Home() {

@@ -134,7 +134,7 @@ export default function Login() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <div className="text-sm text-center">
-            Don't have an account?{" "}
+              Don&#39;t have an account?
             <Link
               href="/signup"
               className="font-medium text-primary hover:text-primary/80"

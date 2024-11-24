@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { cn } from "@/lib/utils";
 import React, {
   createContext,
@@ -6,6 +6,7 @@ import React, {
   useContext,
   useRef,
   useEffect,
+  useCallback,
 } from "react";
 
 const MouseEnterContext = createContext(undefined);
@@ -13,7 +14,7 @@ const MouseEnterContext = createContext(undefined);
 export const CardContainer = ({
   children,
   className,
-  containerClassName
+  containerClassName,
 }) => {
   const containerRef = useRef(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
@@ -37,13 +38,18 @@ export const CardContainer = ({
     setIsMouseEntered(false);
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
   };
+
   return (
-    (<MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
+    <MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
       <div
-        className={cn("py-5 px-5 flex items-center justify-center", containerClassName)}
+        className={cn(
+          "py-5 px-5 flex items-center justify-center",
+          containerClassName
+        )}
         style={{
           perspective: "1000px",
-        }}>
+        }}
+      >
         <div
           ref={containerRef}
           onMouseEnter={handleMouseEnter}
@@ -55,26 +61,25 @@ export const CardContainer = ({
           )}
           style={{
             transformStyle: "preserve-3d",
-          }}>
+          }}
+        >
           {children}
         </div>
       </div>
-    </MouseEnterContext.Provider>)
+    </MouseEnterContext.Provider>
   );
 };
 
-export const CardBody = ({
-  children,
-  className
-}) => {
+export const CardBody = ({ children, className }) => {
   return (
-    (<div
+    <div
       className={cn(
         "h-96 w-96 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]",
         className
-      )}>
+      )}
+    >
       {children}
-    </div>)
+    </div>
   );
 };
 
@@ -93,26 +98,28 @@ export const CardItem = ({
   const ref = useRef(null);
   const [isMouseEntered] = useMouseEnter();
 
-  useEffect(() => {
-    handleAnimations();
-  }, [isMouseEntered]);
-
-  const handleAnimations = () => {
+  // Memoize the handleAnimations function
+  const handleAnimations = useCallback(() => {
     if (!ref.current) return;
     if (isMouseEntered) {
       ref.current.style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
     } else {
       ref.current.style.transform = `translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)`;
     }
-  };
+  }, [isMouseEntered, translateX, translateY, translateZ, rotateX, rotateY, rotateZ]);
+
+  useEffect(() => {
+    handleAnimations();
+  }, [handleAnimations]);
 
   return (
-    (<Tag
+    <Tag
       ref={ref}
       className={cn("w-fit transition duration-200 ease-linear", className)}
-      {...rest}>
+      {...rest}
+    >
       {children}
-    </Tag>)
+    </Tag>
   );
 };
 
