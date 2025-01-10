@@ -1,7 +1,7 @@
 "use client";
 import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // Import the router for dynamic URL params
+import { useRouter } from "next/router";
 import {
   Card,
   CardContent,
@@ -20,12 +20,20 @@ export default function QuizInterface() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [quizData, setQuizData] = useState([]); // Quiz data to be fetched
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [quizId, setQuizId] = useState(null); // State to hold `quiz` ID
+  const [quizData, setQuizData] = useState([]); 
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);
+  const [quizId, setQuizId] = useState(null); 
+  
 
-  // UseEffect to retrieve quiz ID from sessionStorage
+  useEffect(() => {
+    if(!localStorage.getItem('Token')){
+      window.location.href="/login";
+    }
+    
+  }, []);
+ 
+ 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const id = sessionStorage.getItem("quiz");
@@ -33,30 +41,30 @@ export default function QuizInterface() {
     }
   }, []);
 
-  // Fetch quiz data from API when `quizId` is available
+
   useEffect(() => {
-    if (!quizId) return; // Return early if `quizId` is not available
+    if (!quizId) return; 
 
     const takeTest = async () => {
-      setLoading(true); // Start loading
+      setLoading(true); 
       try {
         const res = await fetch(`${BACKEND_SERVER}/api/quiz/${quizId}`);
         const data = await res.json();
 
         if (res.ok) {
-          setQuizData(data); // Set the fetched data
+          setQuizData(data); 
         } else {
           setError("Failed to load quiz data");
         }
       } catch (error) {
         setError("An error occurred while fetching the data");
       } finally {
-        setLoading(false); // End loading
+        setLoading(false); 
       }
     };
 
     takeTest();
-  }, [quizId]); // Re-run effect when `quizId` changes
+  }, [quizId]); 
 
   const handleSubmit = () => {
     const selectedOption = quizData[currentQuestion]?.options.find(
@@ -82,7 +90,7 @@ export default function QuizInterface() {
     setShowResult(false);
   };
 
-  // Show loading, error, or quiz content
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
