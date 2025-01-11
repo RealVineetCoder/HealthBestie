@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -81,4 +78,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-} */
