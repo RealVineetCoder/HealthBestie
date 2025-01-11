@@ -33,10 +33,12 @@ export default function Navbar() {
     }
   }, [])
 
+  // Handle Logout
   const handleLogout = () => {
+    // Remove token from localStorage
     localStorage.removeItem('Token')
-    setIsLoggedIn(false) 
-    window.location.href = '/' 
+    setIsLoggedIn(false) // Update the login state
+    window.location.href = '/' // Optionally, redirect to home or login page
   }
 
   return (
@@ -104,6 +106,7 @@ export default function Navbar() {
                     </Link>
                   ))}
                   <Link href='/login' className="mt-4">
+                    {/* Sign In button for mobile */}
                   </Link>
                 </nav>
               </SheetContent>

@@ -12,10 +12,11 @@ export default function Card({ testName, title, description }) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); 
+    setIsClient(true); // Set state to true once the component is mounted on the client
   }, []);
 
   const handleCardClick = () => {
+    // Ensure we are on the client before using router
   
       window.sessionStorage.setItem('quiz',testName);
       window.location.href=(`/quiz`);

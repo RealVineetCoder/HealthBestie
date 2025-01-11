@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
@@ -27,6 +27,7 @@ export default function Login() {
 
   const router = useRouter();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,7 +59,7 @@ export default function Login() {
         const token = data.token;
         localStorage.setItem("Token", token);
         toast.success("Logged in successfully!");
-        router.push("/"); 
+        router.push("/"); // Navigate to the homepage after successful login
       } else {
         setError(data.message || "Login failed. Please try again.");
         toast.error(data.message || "Invalid email or password.");
@@ -69,7 +70,7 @@ export default function Login() {
     }
   };
 
-
+  // Check for token on mount
   useEffect(() => {
     const token = localStorage.getItem("Token");
     if (token) {
@@ -88,6 +89,7 @@ export default function Login() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Input */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -99,6 +101,7 @@ export default function Login() {
                 required
               />
             </div>
+            {/* Password Input */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -123,6 +126,7 @@ export default function Login() {
                 </button>
               </div>
             </div>
+            {/* Submit Button */}
             <Button type="submit" className="w-full">
               Sign in
             </Button>

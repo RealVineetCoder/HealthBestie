@@ -18,6 +18,7 @@ export default function Signup() {
   const [status, setStatus] = useState({ error: '', success: '' });
   const router = useRouter();
 
+  // Handle input changes dynamically
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -26,10 +27,11 @@ export default function Signup() {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
+    // Validate form fields
     const emptyFields = Object.keys(formData).filter((key) => !formData[key]);
     if (emptyFields.length) {
       setStatus({ error: 'All fields are required', success: '' });
@@ -50,7 +52,7 @@ export default function Signup() {
       if (response.ok) {
         setStatus({ success: data.message, error: '' });
         toast.success("Account created successfully!");
-        setTimeout(() => router.push('/login'), 2000); 
+        setTimeout(() => router.push('/login'), 2000); // Redirect after a delay
       } else {
         setStatus({ error: data.message, success: '' });
       }
