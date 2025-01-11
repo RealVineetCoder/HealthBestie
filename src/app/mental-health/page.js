@@ -1,190 +1,147 @@
-
 "use client";
-
-import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";;
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { BACKEND_SERVER } from "@/lib/config";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send } from 'lucide-react';
 
-export default function QuizInterface() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [quizData, setQuizData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [quizId, setQuizId] = useState(null);
+export default function ChatbotInterface() {
+  if(!localStorage.getItem('Token')){
+    window.location.href="/login";
+  }
+  const [messages, setMessages] = useState([
+    { role: 'bot', content: 'Hello! How can I assist you today?' }
+  ]);
 
-  const router = useRouter();
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef(null);
 
-  // Check if user is logged in
+  // Scroll to the bottom whenever messages update
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login"); // Redirect to login if not logged in
-      }
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
-  }, [router]);
+  }, [messages]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const id = sessionStorage.getItem("quiz");
-      setQuizId(id);
-    }
-  }, []);
+  // Function to transform AI response text
+  function transformText(input) {
+    let counter = 1;
 
-  useEffect(() => {
-    if (!quizId) return;
+    // Replace ** with <b> for bold formatting
+    input = input.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
-    const takeTest = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${BACKEND_SERVER}/api/quiz/${quizId}`);
-        const data = await res.json();
+    // Replace * with numbered list and add new line before it
+    input = input.replace(/\*/g, () => {
+      return `<br />${counter++}.`; // Add a break line and increment the number
+    });
 
-        if (res.ok) {
-          setQuizData(data);
-        } else {
-          setError("Failed to load quiz data");
+    return input;
+  }
+
+  // Handle message submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (input.trim() === '') return; // Prevent sending empty messages
+
+    // Add user message to the chat
+    const userMessage = { role: "user", content: input };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        `https://backend-health-bestie.vercel.app/api/users/chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: input }),
         }
-      } catch (error) {
-        setError("An error occurred while fetching the data");
-      } finally {
-        setLoading(false);
+      );
+
+      if (!response.ok) throw new Error("Failed to send message");
+
+      const data = await response.json();
+
+      // Check for valid AI response and update chat
+      if (data.response) {
+        const transformedResponse = transformText(data.response);
+
+        const botMessage = { role: "bot", content: transformedResponse };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+      } else {
+        console.error("No reply from AI.");
+        const errorMessage = { role: "bot", content: 'Sorry, I encountered an error. Please try again.' };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
       }
-    };
-
-    takeTest();
-  }, [quizId]);
-
-  const handleSubmit = () => {
-    const selectedOption = quizData[currentQuestion]?.options.find(
-      (option) => option.text === selectedAnswer
-    );
-
-    if (selectedOption) {
-      setScore(score + selectedOption.score);
-    }
-
-    if (currentQuestion + 1 < quizData.length) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer("");
-    } else {
-      setShowResult(true);
+    } catch (error) {
+      console.error("Error sending message:", error.message);
+      const errorMessage = { role: "bot", content: 'Sorry, I encountered an error. Please try again.' };
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer("");
-    setScore(0);
-    setShowResult(false);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <Loader2 className="w-16 h-16 text-blue-500 animate-spin" />
-          <p className="mt-4 text-lg font-semibold text-gray-600">
-            Loading quiz data...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
-    <div className="mt-20">
-      <Card className="w-full max-w-lg mx-auto">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <Card className="w-full max-w-2xl h-[600px] flex flex-col">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            {quizId ? quizId.charAt(0).toUpperCase() + quizId.slice(1) : ""}{" "}
-            Assessment
-          </CardTitle>
+          <CardTitle>AI Chatbot</CardTitle>
         </CardHeader>
-        <CardContent>
-          {!showResult ? (
-            <>
-              <Progress
-                value={((currentQuestion + 1) / quizData.length) * 100}
-                className="mb-4"
-              />
-              <h2 className="text-xl font-semibold mb-4">
-                {quizData[currentQuestion]?.question}
-              </h2>
-              <RadioGroup
-                value={selectedAnswer}
-                onValueChange={setSelectedAnswer}
+        <CardContent className="flex-grow overflow-hidden">
+          <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`mb-4 ${
+                  message.role === 'user' ? 'text-right' : 'text-left'
+                }`}
               >
-                {quizData[currentQuestion]?.options.map((option, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-2 mb-2"
-                  >
-                    <RadioGroupItem
-                      value={option.text}
-                      id={`option-${index}`}
-                    />
-                    <Label htmlFor={`option-${index}`}>{option.text}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </>
-          ) : (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">Quiz Completed!</h2>
-              <p className="text-xl">
-                Your score: {score} out of {quizData.length * 3}
-              </p>
-
-              {score <= 5 ? (
-                <p className="text-xl">
-                  Mild symptoms. Monitor your well-being.
-                </p>
-              ) : score <= 10 ? (
-                <p className="text-xl">
-                  Moderate symptoms. Consider reaching out to a professional.
-                </p>
-              ) : (
-                <p className="text-xl">
-                  Severe symptoms. Professional help is highly recommended.
-                </p>
-              )}
-            </div>
-          )}
+                <div
+                  className={`inline-block p-3 rounded-lg ${
+                    message.role === 'user'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-800'
+                  }`}
+                  dangerouslySetInnerHTML={{ __html: message.content }} // Render transformed HTML content
+                />
+              </div>
+            ))}
+            {isLoading && (
+              <div className="text-left mb-4">
+                <div className="inline-block p-3 rounded-lg bg-gray-200 text-gray-800">
+                  Thinking...
+                </div>
+              </div>
+            )}
+          </ScrollArea>
         </CardContent>
-        <CardFooter className="flex justify-end">
-          {!showResult ? (
-            <Button onClick={handleSubmit} disabled={!selectedAnswer}>
-              {currentQuestion + 1 === quizData.length ? "Finish" : "Next"}
+        <CardFooter>
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full space-x-2"
+          >
+            <Input
+              placeholder="Type your message here..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-grow"
+            />
+            <Button type="submit" size="icon" disabled={isLoading}>
+              <Send className="h-4 w-4" />
+              <span className="sr-only">Send</span>
             </Button>
-          ) : (
-            <Button onClick={resetQuiz}>Restart Quiz</Button>
-          )}
+          </form>
         </CardFooter>
       </Card>
     </div>
   );
 }
-
 
 
 
