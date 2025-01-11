@@ -13,7 +13,6 @@ import ImageCursor from "@/components/imagecursor";
 // Add the correct extension.
 
 export default function Home() {
-  
   return (
     <div className="min-h-screen flex flex-col w-screen">
       <ImageCursor />

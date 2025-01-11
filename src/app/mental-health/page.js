@@ -7,13 +7,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from 'lucide-react';
 
 export default function ChatbotInterface() {
-  if(!localStorage.getItem('Token')){
-    window.location.href="/login";
-  }
   const [messages, setMessages] = useState([
     { role: 'bot', content: 'Hello! How can I assist you today?' }
   ]);
-
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef(null);
